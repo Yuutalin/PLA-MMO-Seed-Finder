@@ -1,0 +1,7 @@
+id = "junli-pla-mmo-seed"
+name = "阿尔宙斯 MMO 测 Seed"
+version = "0.3.13"
+author = "君粒&GPT"
+description = "采集四只宝可梦的交换确认页信息，自动反推《宝可梦传说 阿尔宙斯》群体 Seed，并保存结果。"
+api = "1.9"
+module = "plugin"

@@ -1,0 +1,5 @@
+Final source verification:
+- Python syntax compilation: passed
+- unittest: 31 tests passed
+- Two-column right-edge alignment assertion: passed
+- Manual Pokeldn/Switch hardware verification: not performed

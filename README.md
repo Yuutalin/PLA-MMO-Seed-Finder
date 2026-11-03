@@ -1,4 +1,9 @@
-# 阿尔宙斯 MMO Seed 反推助手 \| PLA MMO Seed Finder
+# 阿尔宙斯 MMO Seed 反推助手 | PLA MMO Seed Finder
+
+**语言 / Language：** 点击下方标题展开或收起对应语言；默认显示简体中文。 / Click a heading below to expand or collapse that language section; Simplified Chinese is open by default.
+
+<details name="readme-language" open>
+<summary>简体中文（默认）</summary>
 
 面向 [Pokeldn](https://github.com/Decryptu/pokeldn) 的《宝可梦传说 阿尔宙斯》MMO Seed 反推插件。插件收集同一群体中四只**最初捕获的宝可梦**的交换确认页记录，并调用外部计算程序 **[EtumrepMMO](https://github.com/kwsch/EtumrepMMO)** 反推群体 Seed。计算结果会显示在 Pokeldn 界面，并保存为文本文件。
 
@@ -178,3 +183,189 @@ python -m unittest -v test_plugin.py
 ## 许可证
 
 当前版本尚未在仓库中指定开源许可证。公开发布前，请确认你有权公开分发所提交的源码和资源，并根据项目的实际授权选择并添加 `LICENSE` 文件。
+
+</details>
+
+<details name="readme-language">
+<summary>English (click to expand)</summary>
+
+This is an MMO Seed finder plugin for [Pokeldn](https://github.com/Decryptu/pokeldn) for *Pokémon Legends: Arceus*. It collects trade-confirmation-page records for four **originally caught Pokémon** from the same MMO group, then invokes the external solver **[EtumrepMMO](https://github.com/kwsch/EtumrepMMO)** to recover the group's Seed. The result is displayed in the Pokeldn interface and saved to a text file.
+
+> The plugin version represented by this repository is `v0.3.13`. Passing automated tests does not mean that the plugin has been fully validated with every Pokeldn setup, wireless adapter, or physical Switch environment.
+
+## Project Overview
+
+- **Project name:** Arceus MMO Seed Finder
+- **Suggested GitHub repository name:** `PLA-MMO-Seed-Finder`
+- **Plugin ID:** `junli-pla-mmo-seed`
+- **Current version:** `0.3.13`
+- **Platform:** Pokeldn desktop application for Windows
+- **Main purpose:** Collect valid records for four Pokémon and use EtumrepMMO to calculate the MMO group Seed in *Pokémon Legends: Arceus*.
+
+## Screenshots
+
+Place your own screenshots in the `docs/images/` folder and use the filenames below. If a screenshot is not available, GitHub will display a broken-image placeholder.
+
+<!-- Screenshot 1: Main plugin interface and collection progress -->
+
+![Plugin main interface and collection progress](docs/images/01-main-interface.png)
+
+<!-- Screenshot 2: Compact information cards for four Pokémon -->
+
+![Four Pokémon information cards](docs/images/02-pokemon-cards.png)
+
+<!-- Screenshot 3: Successful Seed calculation and result -->
+
+![Seed calculation result](docs/images/03-seed-result.png)
+
+<!-- Screenshot 4: Configuration or log output (optional) -->
+
+![Settings and runtime log](docs/images/04-settings-and-log.png)
+
+## Features
+
+- Collects Pokémon records through Pokeldn's local trading workflow.
+- A Pokémon is counted only after the trade confirmation page, “Are you sure you want to trade this Pokémon?”, is reached. Moving the cursor, hovering, or viewing a normal preview does not count.
+- The plugin does not automatically confirm an actual trade. After the fourth record is saved, it ends the online session normally and then starts the Seed calculation.
+- Displays compact cards containing each Pokémon's Chinese name, level, gender, nature, Poké Ball, individual values (IVs), Trainer ID / Secret ID (TID / SID), Chinese ability name, official XS/S/M/L/XL size, and moves.
+- Prioritizes Pokeldn's local Pokémon sprite cache. If a sprite is missing, the plugin attempts to download it in the background; if that also fails, a placeholder image is shown.
+- Keeps the 12 most recent Pokémon records for reviewing recently collected data.
+- After a successful calculation, displays the Seed in the interface and writes it to `latest_seed.txt`. It also generates TXT/JSON summaries of the most recent Pokémon information.
+- Sprite handling does not depend on Pillow.
+
+## Workflow
+
+1. In *Pokémon Legends: Arceus*, go to the trading NPC in Jubilife Village and select local trading.
+2. Enter the same 8-digit link code on the Switch and in the Pokeldn plugin, then wait for the connection to succeed.
+3. In the Pokémon storage boxes, select an **originally caught Pokémon** and proceed to the “Are you sure you want to trade this Pokémon?” confirmation page.
+4. Once the plugin indicates that the Pokémon has been recorded, press B to return to the storage boxes. Do not confirm the actual trade.
+5. Select the next originally caught Pokémon from the same MMO group and repeat until the counter reaches `4/4`.
+6. After the fourth record is saved, the plugin automatically ends the online session and launches EtumrepMMO.
+7. If the group Seed is found, the result is displayed in the plugin interface and saved to `latest_seed.txt`.
+
+**Note:** The calculation requires four valid records from the same MMO group. If no Seed is found, first check that all four Pokémon belong to the same group and that every record is from an originally caught Pokémon.
+
+## Requirements and Dependencies
+
+### Required Environment
+
+- Windows desktop operating system.
+- The Pokeldn desktop application installed and working, with plugin support available.
+- *Pokémon Legends: Arceus*, a Nintendo Switch, and local wireless hardware / an adapter supported by Pokeldn.
+- A correctly configured and accessible Switch key file (`prod.keys`) in Pokeldn.
+- The official Windows x64 release package of EtumrepMMO.
+- **.NET Runtime 8.0** and **Microsoft Visual C++ Redistributable**. If the solver cannot start, check that both runtime dependencies are installed.
+
+### External Seed Solver
+
+This plugin collects and organizes records, displays information in the interface, and launches the calculation program. **The Seed-recovery algorithm is executed by the separate EtumrepMMO program.** EtumrepMMO is not included in this repository's source code. Obtain it from its official release page:
+
+- [EtumrepMMO Official Releases](https://github.com/kwsch/EtumrepMMO/releases/latest)
+
+After downloading the official Windows x64 release package, extract **all files in the archive** into the `solver` subfolder at the following location. Copying only the `.exe` file is not sufficient:
+
+```text
+%APPDATA%\pokeldn\plugin-data\junli-pla-mmo-seed\solver\
+```
+
+For most Windows user accounts, this corresponds to:
+
+```text
+C:\Users\<YourWindowsUsername>\AppData\Roaming\pokeldn\plugin-data\junli-pla-mmo-seed\solver\
+```
+
+If the directory does not exist, run the plugin once and then create the `solver` folder manually. After setup, run “Calculate Recent Records” again or start a new collection. Previously saved records usually do not need to be collected again.
+
+## Plugin Files
+
+A `.pokeplugin` installation package is essentially an archive containing the plugin files. The plugin's core files should be placed together in the same plugin directory:
+
+| File | Purpose | Required? |
+|---|---|---|
+| `plugin.toml` | Plugin metadata: ID, name, version, entry module, and description | Yes |
+| `plugin.py` | Pokeldn plugin registration entry point; registers tools and connection parameters | Yes |
+| `pla_mmo_seed.py` | Main implementation: collection logic, record storage, card UI, sprite cache, and EtumrepMMO invocation | Yes |
+| `pokemon-placeholder.png` | Placeholder image used when a Pokémon sprite is unavailable | Yes |
+| `test_plugin.py` | Local automated tests for regression checks during development and after changes | For development |
+| `README.md` | Project overview, installation, and usage instructions | Recommended |
+| `CHANGELOG.md` | Version history | Recommended |
+| `docs/` | Inspection reports, test results, and project screenshots | Optional |
+
+Regular users should install the `.pokeplugin` package provided on the Releases page. Direct access to the source files is generally needed only for development, debugging, or building the package manually.
+
+## Installation and Configuration
+
+### Regular Users
+
+1. Download the latest `.pokeplugin` package from GitHub Releases.
+2. Import the package using the plugin installation interface provided by your current version of Pokeldn.
+3. Confirm that Pokeldn can access the Switch key file, and prepare hardware that supports local wireless communication.
+4. Install EtumrepMMO and its runtime dependencies as described above.
+5. Launch the plugin and collect four Pokémon by following the workflow.
+
+### Developers / Manual Installation
+
+1. Clone this repository.
+2. Make sure `plugin.toml`, `plugin.py`, `pla_mmo_seed.py`, and `pokemon-placeholder.png` are in the same plugin directory.
+3. Load the plugin directory or package it as a `.pokeplugin` file using the method supported by your current version of Pokeldn.
+4. Install the external EtumrepMMO program and configure the `solver` directory.
+5. Run the automated tests first, then verify the actual Pokeldn and Switch connection workflow in a separate test environment.
+
+## Data Storage Location
+
+The plugin uses Pokeldn's plugin data directory. The default path for this plugin ID is:
+
+```text
+%APPDATA%\pokeldn\plugin-data\junli-pla-mmo-seed\
+```
+
+Common contents include:
+
+| Path | Contents |
+|---|---|
+| `latest_seed.txt` | The group Seed from the most recent successful calculation |
+| `latest_pokemon_details.txt` | Text summary of the most recently collected Pokémon information |
+| `latest_pokemon_details.json` | JSON summary of the most recently collected Pokémon information |
+| `runs/` | Collection sessions and Pokémon records; old records are cleaned up according to the retention policy |
+| `sprite-cache/` | Cached downloaded Pokémon sprites |
+| `solver/` | EtumrepMMO official release files and its calculation input directory |
+
+The plugin limits the growth of historical records and the sprite cache. These are local runtime data and should not be committed to a public GitHub repository.
+
+## Implementation
+
+1. **Pokeldn plugin registration:** `plugin.py` uses `Field` and `Tool` from `pokeldn.plugins` to register the entry point and parameters such as the link code, wireless channel, and maximum wait time.
+2. **Connection and record collection:** `pla_mmo_seed.py` calls Pokeldn's local trading functionality for *Pokémon Legends: Arceus* and monitors the corresponding trade-confirmation-page event. Pokémon data is saved only after the record event associated with that confirmation page occurs.
+3. **Data persistence:** Saves the four Pokémon's PA8 records and the information needed by the interface, maintains a window of recent records, and generates text / JSON summaries.
+4. **Native interface updates:** Uses Pokeldn's plugin panel interface to display progress, compact Pokémon cards, and the Seed result. Sprites are read from the local cache first; if missing, the plugin attempts to download them through standard-library networking interfaces. Image format checks do not depend on Pillow.
+5. **Seed calculation:** Uses Python `subprocess` to launch the EtumrepMMO executable in the `solver` directory, reads its output, and determines whether a final group Seed was obtained.
+6. **Result storage:** On success, updates the interface, writes `latest_seed.txt`, and attempts to open the result text file.
+
+## Source Checks
+
+Local checks for the current `v0.3.13` source package:
+
+- Python syntax compilation check passed.
+- Automated tests: 31 passed.
+- Two-column layout alignment assertion passed.
+- ZIP archive integrity check passed.
+- **Real-hardware validation with Pokeldn + Switch on a user's computer has not been completed.** The actual environment still needs to be tested after installation.
+
+Run the tests:
+
+```bash
+python -m unittest -v test_plugin.py
+```
+
+## Security and Usage Notes
+
+- Do not commit `prod.keys`, personal save files, actual collected `.pa8` files, `runs/`, `latest_seed.txt`, or personal runtime logs to a public repository.
+- EtumrepMMO files in `solver/` must be downloaded separately from the official release page. This repository does not repackage or modify that program.
+- Respect the licenses and terms of use for Pokeldn, EtumrepMMO, the game, and related image assets.
+- This is a community tool. It is not affiliated with or endorsed by Nintendo, The Pokémon Company, GAME FREAK, or the official Pokeldn project.
+
+## License
+
+No open-source license has been specified in the repository for the current version. Before publishing it publicly, confirm that you have the right to distribute the submitted source code and assets, then choose and add a `LICENSE` file that reflects the project's actual licensing terms.
+
+</details>
